@@ -90,7 +90,6 @@ const func2 = () => {
         })
     })
 
-    console.log(cardNoHashMap)
     Object.keys(cardNoHashMap).forEach(x => {
         console.log(cardNoHashMap[x])
         sum+=cardNoHashMap[x]
@@ -100,23 +99,4 @@ const func2 = () => {
 }
 
 func2()
-
-// 4 2 2 1
-// formula is copies = (noOfMatchingNumbers * currentInstances) / matchingNumbers
-// card 1 => 4 * 1 = 4(update next 4)
-// card 2 => update og' numbers +  2 * 2 = 4 /2 = 2(update next 2)
-
-
-
-
-    
-// Card 1 -> 2,3,4,5 (og) + copy of 2,3,4,5
-// Card 2 -> 3,4 (og) + copy of 3,4 + card 1 copy also wins 3,4
-// Card 3 -> 
-
-// card 1 -> 2,3,4,5
-// card 2,2copy -> 3,4
-// card 3,3copy,3from2,3from2copy -> 4,5
-// card 4,4copy,4from2, 4from2Copy,+4
-// card 5,5copy,+4,+8
 
