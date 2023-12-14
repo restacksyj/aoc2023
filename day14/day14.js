@@ -1,5 +1,5 @@
 const fs = require('fs');
-const data = fs.readFileSync("./sample.txt", "binary");
+const data = fs.readFileSync("./input.txt", "binary");
 
 
 const lines = data.split("\n")
@@ -33,26 +33,28 @@ const func1 = () => {
         for (let j = 0; j < row.length; j++) {
             const colEl = row[i]
             const rowEl = row[j]
-            if (i == 0) {
-                northGrid[i][j] = rowEl
-            } else {
-                if (rowEl == 'O') {
-                    index = i - 1
-                    while (index >= 0 && (grid[index][j] != '#' || grid[index][j] != 'O')) {
-                        northGrid[index][j] = grid[i][j]
-                        index--
-                    }
-                } else {
-                    northGrid[i][j] = rowEl
+            northGrid[i][j] = rowEl
+            if (rowEl == 'O') {
+                index = i - 1
+                while (index >= 0 && northGrid[index][j] == '.' ) {
+                    northGrid[index][j] = grid[i][j]
+                    northGrid[index+1][j] = "."
+                    index--
                 }
-            }
+            }             
         }
         
     }
 
-    console.log(northGrid)
+    const revNorthGrid = northGrid.reverse()
 
-    
+    for (let i = 0; i < revNorthGrid.length; i++) {
+        const row = revNorthGrid[i];
+        const stones = row.filter(x => x == 'O')
+        if (stones.length) {
+            sum += stones.length * (i+1)
+        }
+    }
 
     return sum
 }
