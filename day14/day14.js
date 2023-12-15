@@ -1,5 +1,5 @@
 const fs = require('fs');
-const data = fs.readFileSync("./new.txt", "binary");
+const data = fs.readFileSync("./ogInput.txt", "binary");
 
 
 const lines = data.split("\n")
@@ -46,7 +46,6 @@ const func1 = () => {
         
     }
 
-    console.log(northGrid.join("\n"), "func111")
     const revNorthGrid = northGrid.reverse()
 
     for (let i = 0; i < revNorthGrid.length; i++) {
@@ -60,35 +59,12 @@ const func1 = () => {
     return sum
 }
 
-console.log(func1())
-
-
-const func1NorthMod = (modGrid) => {
-    for (let i = 0; i < modGrid.length; i++) {
-        const row = modGrid[i];
-        for (let j = 0; j < row.length; j++) {
-            const colEl = row[i]
-            const rowEl = row[j]
-            modGrid[i][j] = rowEl
-            if (rowEl == 'O') {
-                let index = i - 1
-                while (index >= 0 && modGrid[index][j] == '.' ) {
-                    modGrid[index][j] = modGrid[i][j]
-                    modGrid[index+1][j] = "."
-                    index--
-                }
-            }             
-        }
-    }
-
-    // return modGrid
-
-}
+// console.log(func1())
 
 
 const func2 = () => {
     const modGrid = []
-    const NUM = 2
+    const NUM = 1
     let sum = 0
     for (let i=0; i<grid.length; ++i) {
         let emptyDot = []
@@ -99,7 +75,7 @@ const func2 = () => {
     }
 
     peformCycle(NUM, modGrid)
-    const revNorthGrid = modGrid.reverse()
+    const revNorthGrid = modGrid
 
     for (let i = 0; i < revNorthGrid.length; i++) {
         const row = revNorthGrid[i];
@@ -109,93 +85,60 @@ const func2 = () => {
         }
     }
 
-
-
     return sum
 }
 
 const peformCycle = (NUM, modGrid) => {
-    for (let k = 0; k < 1; k++) {
-        cycleNorth(grid, modGrid)
+    for (let k = 0; k < NUM; k++) {
+        if(k==0){
+            cycleNorth(grid, modGrid)
+        }
+        cycleNorth(modGrid, modGrid)
         cycleWest(modGrid)
-        modGrid.reverse()
-        console.log(modGrid.join("\n"))
-        console.log("south")
-        // modGrid.reverse()
-        func1NorthMod(modGrid)
-        console.log(modGrid.join("\n"))
-        // modGrid.reverse()
-        // cycleWest(modGrid)
+        // cycleSouth(modGrid)
+        rollSouth(modGrid)
+        // modGrid = modGrid.reverse()
+        // cycleNorth(modGrid, modGrid)
+        // modGrid = modGrid.reverse()
+        modGrid = modGrid.map(x => x.reverse())
+        cycleWest(modGrid)
+        modGrid = modGrid.map(x => x.reverse())
     }
 
     return modGrid
 
 }
 
-// const cycle = (grid, modGrid, direction) => {
-//     const dirIdx = {
-//         north: -1,
-//         south: +1,
-//         east: +1,
-//         west: -1,
-//     }
-//
-//     for (let i = 0; i < grid.length; i++) {
-//         // const row = grid[i];
-//         let row 
-//         if (direction == "north") {
-//             row = grid[i]
-//         } else {
-//             row = modGrid[i]
-//         }
-//         for (let j = 0; j < row.length; j++) {
-//             const colEl = row[i]
-//             const rowEl = row[j]
-//             modGrid[i][j] = rowEl
-//             if (direction == "north" || direction == "south") {
-//                 if (rowEl == 'O') {
-//                     let index = i + dirIdx[direction]
-//                     while (index >= 0 && modGrid[index][j] == '.' ) {
-//                         modGrid[index][j] = grid[i][j]
-//                         modGrid[index+1][j] = "."
-//                         index--
-//                     }
-//                 }
-//             }
-//             if (direction == "west" || direction == "east") {
-//                 if (rowEl == 'O') {
-//                     let index = j + dirIdx[direction]
-//                     while (index >= 0 && modGrid[i][index] == '.' ) {
-//                         modGrid[i][index] = modGrid[i][j]
-//                         modGrid[i][index+1] = "."
-//                         index--
-//                     }
-//                 }             
-//                 
-//             }
-//         }
-//         
-//     }
-// }
+function rollSouth(grid) {
+    for (let row = grid.length - 1; row >= 0; row--) {
+        for (let col = 0; col < grid[row].length; col++) {
+            if (grid[row][col] === 'O') {
+                for (let i = row + 1; i < grid.length && grid[i][col] === '.'; i++) {
+                    [grid[i - 1][col], grid[i][col]] = [grid[i][col], grid[i - 1][col]];
+                }
+            }
+        }
+    }
+}
 
-// const cycleNorthWIthout = (modGrid) => {
-//     for (let i = 0; i < modGrid.length; i++) {
-//         const row = modGrid[i];
-//         for (let j = 0; j < row.length; j++) {
-//             const rowEl = row[j]
-//             // modGrid[i][j] = rowEl
-//             if (rowEl == 'O') {
-//                 let index = i - 1
-//                 while (index >= 0 && modGrid[index][j] == '.' ) {
-//                     modGrid[index][j] = modGrid[i][j]
-//                     modGrid[index+1][j] = "."
-//                     index--
-//                 }
-//             }             
-//         }
-        
-//     }
-// }
+
+const cycleSouth = (modGrid) => {
+    for (let i = 0; i < modGrid.length; i++) {
+        const row = modGrid[i];
+        for (let j = 0; j < row.length; j++) {
+            const rowEl = row[j]
+            if (rowEl == 'O') {
+                let index = i + 1
+                while (index < modGrid.length && modGrid[i][index] == '.' ) {
+                    modGrid[i][index-1] = modGrid[i][index]
+                    modGrid[i][index] =  modGrid[i][index-1]
+                    i++
+            }
+        }
+    }
+}
+}
+
 
 const cycleNorth = (grid, modGrid) => {
     for (let i = 0; i < grid.length; i++) {
@@ -235,47 +178,4 @@ const cycleWest = (modGrid) => {
     }
 }
 
-// const cycleEast = (modGrid) => {
-//     for (let i = 0; i < modGrid.length; i++) {
-//         const row = modGrid[i];
-//         for (let j = 0; j < row.length; j++) {
-//             const rowEl = row[j]
-//             modGrid[i][j] = rowEl
-//             if (rowEl == 'O') {
-//                 let index = j + 1
-//                 while (index < grid.length && modGrid[i][index] == '.' ) {
-//                     modGrid[i][index] = modGrid[i][index-1]
-//                     modGrid[i][index-1] = "."
-//                     index++
-//                 }
-//             }             
-//         }
-        
-//     }
-// }
-
-// const cycleSouth = (modGrid) => {
-//     for (let i = 0; i < modGrid.length; i++) {
-//         const row = modGrid[i];
-//         for (let j = 0; j < row.length; j++) {
-//             const colEl = row[i]
-//             if (colEl == 'O') {
-//                 let index = i + 1
-//                 while (index < modGrid.length && modGrid[i][index] == '.' ) {
-//                     let curr = index - 1
-//                     while (modGrid[curr][j] == "O"){
-//                         let len = modGrid.length - curr
-//                         modGrid[len][j] = "0"
-//                         modGrid[curr][j] = "."
-//                         curr--
-//                     }
-//                     // modGrid[index][j] = modGrid[index-1][j]
-//                     // modGrid[index-1][j] = temp
-//                     index++
-//                 }
-//             }             
-//         }
-        
-//     }
-// }
 console.log(func2())
